@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  title       String
+  subtitle    String
+  description String
+  overview    String
+  role        String
+  duration    String
+  year        String
+  company     String
+  coverImage  String
+  accentColor String            @default("#4F8EF7")
+  featured    Boolean           @default(false)
+  published   Boolean           @default(true)
+  order       Int               @default(0)
+  tools       String            @default("[]")
+  tags        String            @default("[]")
+  metrics     String            @default("[]")
+  gallery     String            @default("[]")
+  prototypeUrl String?
+  liveUrl      String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  categories  ProjectCategory[]
+  caseStudy   CaseStudy?
+}
+
+model Category {
+  id       String            @id @default(cuid())
+  name     String            @unique
+  slug     String            @unique
+  projects ProjectCategory[]
+}
+
+model ProjectCategory {
+  projectId  String
+  categoryId String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, categoryId])
+}
+
+model CaseStudy {
+  id         String   @id @default(cuid())
+  projectId  String   @unique
+  problem    String   @default("")
+  research   String   @default("[]")
+  wireframes String   @default("[]")
+  hiFidelity String   @default("[]")
+  prototype  String?
+  testing    String   @default("{}")
+  lessons    String   @default("")
+  figmaEmbed String?
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Skill {
+  id         String  @id @default(cuid())
+  name       String
+  level      Int
+  icon       String
+  category   String
+  order      Int     @default(0)
+  showInHero Boolean @default(false)
+}
+
+model Experience {
+  id           String    @id @default(cuid())
+  company      String
+  role         String
+  period       String
+  location     String
+  description  String
+  achievements String    @default("[]")
+  logo         String?
+  color        String    @default("#4F8EF7")
+  order        Int       @default(0)
+  startDate    DateTime?
+  endDate      DateTime?
+  current      Boolean   @default(false)
+}
+
+model Education {
+  id          String  @id @default(cuid())
+  institution String
+  degree      String
+  period      String
+  location    String
+  highlight   String?
+  order       Int     @default(0)
+}
+
+model Gallery {
+  id        String   @id @default(cuid())
+  src       String
+  alt       String
+  category  String
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  company   String
+  avatar    String?
+  quote     String
+  featured  Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Blog {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  excerpt     String
+  content     String
+  coverImage  String?
+  category    String
+  tags        String    @default("[]")
+  readTime    String
+  published   Boolean   @default(false)
+  featured    Boolean   @default(false)
+  views       Int       @default(0)
+  seo         String    @default("{}")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  type      String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Settings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model Resume {
+  id         String   @id @default(cuid())
+  fileUrl    String
+  version    String
+  active     Boolean  @default(true)
+  uploadedAt DateTime @default(now())
+}
+
+model Social {
+  id        String   @id @default(cuid())
+  platform  String
+  url       String
+  icon      String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

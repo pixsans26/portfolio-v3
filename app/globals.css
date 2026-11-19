@@ -1,26 +1,722 @@
+/* ─── Embedded Font Faces for Guaranteed Loading ─── */
+@font-face {
+  font-family: 'Clash Display';
+  src: url('https://cdn.fontshare.com/wf/BFBSY7LX5W2U2EROCLVVTQP4VS7S4PC3/IIUX4FGTMD2LK2VWD3RVTAS4SSMUN7B5/53RZKGODFYDW3QHTIL7IPOWTBCSUEZK7.woff2') format('woff2'),
+       url('https://cdn.fontshare.com/wf/BFBSY7LX5W2U2EROCLVVTQP4VS7S4PC3/IIUX4FGTMD2LK2VWD3RVTAS4SSMUN7B5/53RZKGODFYDW3QHTIL7IPOWTBCSUEZK7.woff') format('woff');
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Clash Display';
+  src: url('https://cdn.fontshare.com/wf/FPDAZ2S6SW4QMSRIIKNNGTPM6VIXYMKO/5HNPQ453FRLIQWV2FNOBUU3FKTDZQVSG/Z3MGHFHX6DCTLQ55LJYRJ5MDCZPMFZU6.woff2') format('woff2'),
+       url('https://cdn.fontshare.com/wf/FPDAZ2S6SW4QMSRIIKNNGTPM6VIXYMKO/5HNPQ453FRLIQWV2FNOBUU3FKTDZQVSG/Z3MGHFHX6DCTLQ55LJYRJ5MDCZPMFZU6.woff') format('woff');
+  font-weight: 600;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Clash Display';
+  src: url('https://cdn.fontshare.com/wf/2GQIT54GKQY3JRFTSHS4ARTRNRQISSAA/3CIP5EBHRRHE5FVQU3VFROPUERNDSTDF/JTSL5QESUXATU47LCPUNHZQBDDIWDOSW.woff2') format('woff2'),
+       url('https://cdn.fontshare.com/wf/2GQIT54GKQY3JRFTSHS4ARTRNRQISSAA/3CIP5EBHRRHE5FVQU3VFROPUERNDSTDF/JTSL5QESUXATU47LCPUNHZQBDDIWDOSW.woff') format('woff');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Clash Display';
+  src: url('https://cdn.fontshare.com/wf/VFMK2COV3DN37JR7JQ4CAOJPZ7KWKNY7/ODD5YJNDLHZZB2MIT3DPVH4EIHAMZ34D/BSY64LPTT3OPLVKAZKL3AHKRWZ3D74AC.woff2') format('woff2'),
+       url('https://cdn.fontshare.com/wf/VFMK2COV3DN37JR7JQ4CAOJPZ7KWKNY7/ODD5YJNDLHZZB2MIT3DPVH4EIHAMZ34D/BSY64LPTT3OPLVKAZKL3AHKRWZ3D74AC.woff') format('woff');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://cdn.fontshare.com/wf/LAFFD4SDUCDVQEXFPDC7C53EQ4ZELWQI/PXCT3G6LO6ICM5I3NTYENYPWJAECAWDD/GHM6WVH6MILNYOOCXHXB5GTSGNTMGXZR.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://cdn.fontshare.com/wf/P2LQKHE6KA6ZP4AAGN72KDWMHH6ZH3TA/ZC32TK2P7FPS5GFTL46EU6KQJA24ZYDB/7AHDUZ4A7LFLVFUIFSARGIWCRQJHISQP.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://cdn.fontshare.com/wf/TTX2Z3BF3P6Y5BQT3IV2VNOK6FL22KUT/7QYRJOI3JIMYHGY6CH7SOIFRQLZOLNJ6/KFIAZD4RUMEZIYV6FQ3T3GP5PDBDB6JY.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-bg: #FAFAFA;
+  --color-dark: #0A0A0A;
+  --color-dark-card: #111111;
+  --color-dark-border: #1A1A1A;
+  --color-accent-blue: #4F8EF7;
+  --color-accent-blue-light: #7AAEF9;
+  --color-accent-purple: #7C3AED;
+  --color-accent-orange: #F97316;
+  --color-accent-green: #22C55E;
+  --color-text-primary: #111111;
+  --color-text-secondary: #334155;
+  --color-text-muted: #475569;
+  --color-text-light: #64748B;
+  --color-border: #E5E7EB;
+  --color-border-dark: #262626;
+  --color-glass: rgba(255, 255, 255, 0.05);
+  --color-glass-dark: rgba(0, 0, 0, 0.5);
+
+  --font-geist: var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+  --font-satoshi: 'Satoshi', sans-serif;
+  --font-clash: 'Clash Display', sans-serif;
+
+  --text-hero: clamp(52px, 7.5vw, 88px);
+  --text-hero--line-height: 1.0;
+  --text-hero--letter-spacing: 0.015em;
+
+  --text-display: clamp(38px, 5vw, 68px);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: 0.02em;
+
+  --text-headline: clamp(28px, 3.5vw, 44px);
+  --text-headline--line-height: 1.1;
+  --text-headline--letter-spacing: 0.02em;
+
+  --text-title: clamp(20px, 2.2vw, 30px);
+  --text-title--line-height: 1.2;
+  --text-title--letter-spacing: 0.015em;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.75;
+
+  --text-body: 16px;
+  --text-body--line-height: 1.7;
+
+  --text-small: 14px;
+  --text-small--line-height: 1.6;
+
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-container: 1400px;
+
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
+
+  --shadow-glow-blue: 0 0 40px rgba(79, 142, 247, 0.3);
+  --shadow-glow-purple: 0 0 40px rgba(124, 58, 237, 0.3);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ─── CSS Custom Properties ─── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #FAFAFA;
+  --dark: #0A0A0A;
+  --dark-card: #FFFFFF;
+  --dark-border: #E5E7EB;
+  --accent-blue: #4F8EF7;
+  --accent-purple: #7C3AED;
+  --accent-orange: #F97316;
+  --accent-green: #22C55E;
+  --text-primary: #111111;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+  --border: #E5E7EB;
+  --radius: 1rem;
+  --transition: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #E5E7EB;
+  --color-text-muted: #A1A1AA;
+  --bg: #0A0A0A;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E5E7EB;
+  --text-muted: #D1D5DB;
+  --border: #262626;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Reset ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+  /* Lenis handles smooth scroll */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+.dark body {
+  background: linear-gradient(-45deg, #0A0A0A, #111625, #0D0F1E, #161026, #0A0A0A);
+  background-size: 400% 400%;
+  animation: dark-gradient-flow 22s ease infinite;
+}
+
+.light body {
+  background-color: #FAFAFA;
+  background-image: none;
+}
+
+@keyframes dark-gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ─── Typography ─── */
+h1, h2, h3, h4, h5, h6, .font-clash {
+  font-family: 'Clash Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  letter-spacing: 0.018em;
+}
+
+.font-satoshi {
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ─── Noise Texture Overlay ─── */
+.noise::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ─── Glass Morphism ─── */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-dark {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Gradient Text ─── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, #F97316 0%, #EF4444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: rgba(79, 142, 247, 0.2);
+  color: var(--accent-blue);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.5);
+}
+
+/* ─── Cursor: Custom animated cursor on main website, native cursor on admin ─── */
+body:not(:has(.admin-layout)) * {
+  cursor: none;
+}
+
+body:not(:has(.admin-layout)) a,
+body:not(:has(.admin-layout)) button,
+body:not(:has(.admin-layout)) [role="button"] {
+  cursor: none;
+}
+
+/* ─── Admin Mouse Cursor Override (Visible Normal Cursor) ─── */
+.admin-layout,
+.admin-layout *,
+body:has(.admin-layout),
+body:has(.admin-layout) * {
+  cursor: auto !important;
+}
+
+.admin-layout a,
+.admin-layout button,
+.admin-layout [role="button"],
+.admin-layout select,
+.admin-layout label[for],
+.admin-layout .cursor-pointer,
+body:has(.admin-layout) a,
+body:has(.admin-layout) button,
+body:has(.admin-layout) [role="button"],
+body:has(.admin-layout) select,
+body:has(.admin-layout) .cursor-pointer {
+  cursor: pointer !important;
+}
+
+.admin-layout input,
+.admin-layout textarea,
+body:has(.admin-layout) input,
+body:has(.admin-layout) textarea {
+  cursor: text !important;
+}
+
+.admin-layout input[type="button"],
+.admin-layout input[type="submit"],
+.admin-layout input[type="checkbox"],
+.admin-layout input[type="radio"],
+body:has(.admin-layout) input[type="button"],
+body:has(.admin-layout) input[type="submit"],
+body:has(.admin-layout) input[type="checkbox"],
+body:has(.admin-layout) input[type="radio"] {
+  cursor: pointer !important;
+}
+
+/* ─── Admin Layout Typography: Apple SF Pro Display ─── */
+.admin-layout,
+.admin-layout *,
+body:has(.admin-layout),
+body:has(.admin-layout) * {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+.admin-layout h1,
+.admin-layout h2,
+.admin-layout h3,
+.admin-layout h4,
+.admin-layout h5,
+.admin-layout h6,
+.admin-layout .font-clash {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.admin-layout .font-satoshi,
+.admin-layout p,
+.admin-layout span,
+.admin-layout div,
+.admin-layout label,
+.admin-layout input,
+.admin-layout select,
+.admin-layout textarea,
+.admin-layout button {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "Segoe UI", Roboto, sans-serif !important;
+  letter-spacing: -0.012em;
+}
+
+
+/* ─── Loading states ─── */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ─── Section Utilities ─── */
+.section-padding {
+  padding-top: clamp(80px, 10vw, 160px);
+  padding-bottom: clamp(80px, 10vw, 160px);
+}
+
+.container-custom {
+  max-width: 90%;
+  margin: 0 auto;
+  padding-left: clamp(20px, 5vw, 80px);
+  padding-right: clamp(20px, 5vw, 80px);
+}
+
+/* ─── Text Reveal Animation ─── */
+.reveal-wrapper {
+  overflow: hidden;
+}
+
+.reveal-text {
+  display: block;
+}
+
+/* ─── Floating Blobs ─── */
+.blob {
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: blob-float 8s ease-in-out infinite;
+}
+
+@keyframes blob-float {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(40px, -30px) scale(1.05);
+  }
+
+  50% {
+    transform: translate(-20px, 40px) scale(0.95);
+  }
+
+  75% {
+    transform: translate(-40px, -10px) scale(1.02);
+  }
+}
+
+/* ─── Horizontal scroll clip ─── */
+.clip-reveal {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.8s var(--transition);
+}
+
+.clip-reveal.revealed {
+  clip-path: inset(0 0% 0 0);
+}
+
+/* ─── Tag / Chip ─── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chip-blue {
+  background: rgba(79, 142, 247, 0.1);
+  color: var(--accent-blue);
+}
+
+.chip-purple {
+  background: rgba(124, 58, 237, 0.1);
+  color: var(--accent-purple);
+}
+
+.chip-green {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--accent-green);
+}
+
+.chip-orange {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--accent-orange);
+}
+
+/* ─── Hover lift ─── */
+.hover-lift {
+  transition: transform 0.4s var(--transition), box-shadow 0.4s var(--transition);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── Project Card Overlay ─── */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s var(--transition);
+}
+
+.group:hover .card-overlay {
+  opacity: 1;
+}
+
+/* ─── Magnetic button ripple ─── */
+.magnetic-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.magnetic-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.magnetic-btn:hover::after {
+  opacity: 1;
+}
+
+/* ─── Three.js canvas ─── */
+canvas {
+  display: block;
+}
+
+/* ─── Page transition ─── */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s var(--transition), transform 0.5s var(--transition);
+}
+
+/* ─── Marquee ─── */
+.marquee-inner {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.marquee-reverse .marquee-inner {
+  animation: marquee-reverse 30s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ─── Timeline ─── */
+.timeline-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  position: absolute;
+  left: -5px;
+  top: 6px;
+  box-shadow: 0 0 12px var(--accent-blue);
+}
+
+/* ─── Form inputs ─── */
+.form-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  font-size: 15px;
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.dark .form-input {
+  border-color: var(--dark-border);
+  color: #ffffff;
+}
+
+.form-input:focus,
+.form-input:focus-visible {
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.25) !important;
+  outline: none !important;
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ─── Lightbox ─── */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out !important;
+}
+
+.lightbox-overlay * {
+  cursor: default !important;
+}
+
+.lightbox-overlay button,
+.lightbox-overlay [role="button"],
+.lightbox-overlay a,
+.lightbox-overlay .cursor-pointer {
+  cursor: pointer !important;
+}
+
+/* ─── Command Palette ─── */
+.command-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 20vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  * {
+    cursor: auto !important;
+  }
+
+  .animated-cursor {
+    display: none;
+  }
+}
+
+/* ─── White / Light Theme: Remove shadows and outlines of cards ─── */
+html:not(.dark) {
+  --shadow-card: none !important;
+  --shadow-card-hover: none !important;
+  --shadow-glass: none !important;
+}
+
+html:not(.dark) .shadow-card,
+html:not(.dark) .shadow-card-hover:hover,
+html:not(.dark) .hover-lift:hover {
+  box-shadow: none !important;
+}
+
+/* Remove shadows on cards in light mode */
+html:not(.dark) body:not(:has(.admin-layout)) [class*="shadow-"]:not(button):not(input) {
+  box-shadow: none !important;
+}
+
+/* Remove border outlines on cards in light mode across website (cards, preview boxes, widgets) */
+html:not(.dark) body:not(:has(.admin-layout)) div[class*="rounded-3xl"],
+html:not(.dark) body:not(:has(.admin-layout)) div[class*="rounded-2xl"],
+html:not(.dark) body:not(:has(.admin-layout)) div[class*="rounded-4xl"],
+html:not(.dark) body:not(:has(.admin-layout)) a[class*="rounded-3xl"],
+html:not(.dark) body:not(:has(.admin-layout)) a[class*="rounded-2xl"],
+html:not(.dark) body:not(:has(.admin-layout)) a[class*="rounded-4xl"],
+html:not(.dark) body:not(:has(.admin-layout)) .shadow-card {
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure inputs and interactive form controls retain clean accessible borders and focus states */
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select,
+html:not(.dark) .form-input {
+  border-color: var(--border) !important;
+}
+html:not(.dark) input:focus,
+html:not(.dark) textarea:focus,
+html:not(.dark) .form-input:focus {
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.25) !important;
+}
+
+/* ─── White / Light Theme: Darker Gray Text for Crisp Readability ─── */
+html:not(.dark) {
+  --color-text-secondary: #334155;
+  --color-text-muted: #475569;
+  --color-text-light: #64748B;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+}
+
+html:not(.dark) .text-text-muted {
+  color: #475569 !important;
+}
+
+html:not(.dark) .text-text-secondary {
+  color: #334155 !important;
+}
+
