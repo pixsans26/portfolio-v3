@@ -47,5 +47,6 @@ COPY --from=base /app/.next ./.next
 COPY --from=base /app/prisma ./prisma
 
 EXPOSE 3000
+EXPOSE 80
 
-CMD ["sh", "-c", "npx prisma db push && npm run start"]
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss --skip-generate && npx next start -H 0.0.0.0 -p ${PORT:-3000}"]
