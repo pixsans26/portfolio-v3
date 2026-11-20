@@ -5,7 +5,7 @@ import { Lock, Mail, KeyRound, ArrowRight, ArrowLeft, Eye, EyeOff, AlertCircle }
 import Link from "next/link";
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState("admin@portfolio.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -35,12 +35,6 @@ export default function AdminLoginPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleAutoFill = () => {
-    setEmail("admin@portfolio.com");
-    setPassword("admin123");
-    setError("");
   };
 
   return (
@@ -84,24 +78,15 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full py-2 pl-9 pr-3 rounded-md bg-black/5 dark:bg-white/[0.04] border border-border dark:border-dark-border text-text-primary dark:text-white placeholder:text-text-muted dark:placeholder:text-white/30 font-satoshi text-xs focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all"
-                  placeholder="admin@portfolio.com or admin"
+                  placeholder="Enter your admin email or username"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/60">
-                  Password
-                </label>
-                <button
-                  type="button"
-                  onClick={handleAutoFill}
-                  className="text-[10px] font-satoshi font-semibold text-accent-blue hover:underline flex items-center gap-1"
-                >
-                  <KeyRound size={11} /> Auto-fill Default
-                </button>
-              </div>
+              <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/60 mb-1.5">
+                Password
+              </label>
               <div className="relative flex items-center">
                 <KeyRound size={15} className="absolute left-3 text-text-muted dark:text-white/40 pointer-events-none" />
                 <input
@@ -110,7 +95,7 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full py-2 pl-9 pr-10 rounded-md bg-black/5 dark:bg-white/[0.04] border border-border dark:border-dark-border text-text-primary dark:text-white placeholder:text-text-muted dark:placeholder:text-white/30 font-satoshi text-xs focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all"
-                  placeholder="Enter password (default: admin123)"
+                  placeholder="Enter your password"
                 />
                 <button
                   type="button"
@@ -120,10 +105,6 @@ export default function AdminLoginPage() {
                 >
                   {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
-              </div>
-              <div className="mt-2 p-2 rounded-md bg-black/5 dark:bg-white/5 border border-border/50 dark:border-dark-border flex items-center justify-between text-[11px] font-satoshi text-text-muted dark:text-white/50">
-                <span>Default passcode:</span>
-                <code className="font-mono text-accent-blue font-bold">admin123</code>
               </div>
             </div>
 

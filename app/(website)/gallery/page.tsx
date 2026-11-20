@@ -5,15 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { X, ChevronLeft, ChevronRight, ExternalLink, Images } from "lucide-react";
 
-const galleryImages = [
-  { id: 1, src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80", alt: "Dashboard Design", category: "Dashboard" },
-  { id: 2, src: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&q=80", alt: "Design System", category: "Systems" },
-  { id: 3, src: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80", alt: "Healthcare App", category: "Mobile" },
-  { id: 4, src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80", alt: "EdTech Platform", category: "Mobile" },
-  { id: 5, src: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80", alt: "Mobile App", category: "Mobile" },
-  { id: 6, src: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80", alt: "Food App", category: "Mobile" },
-  { id: 7, src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80", alt: "Analytics", category: "Dashboard" },
-];
+interface GalleryItem {
+  id: string | number;
+  src: string;
+  alt: string;
+  category?: string;
+}
 
 function GalleryContent() {
   const searchParams = useSearchParams();
@@ -21,18 +18,24 @@ function GalleryContent() {
 
   const [active, setActive] = useState<number | string | null>(null);
   const [filter, setFilter] = useState("All");
-  const [galleryList, setGalleryList] = useState(galleryImages);
+  const [galleryList, setGalleryList] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Only fetch gallery photos (excluding Hero Slides which are dedicated to the Home page slider)
+    // Only fetch gallery photos from database (excluding Hero Slides which are dedicated to the Home page slider)
     fetch("/api/gallery?excludeCategory=Hero%20Slide")
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.items && data.items.length > 0) {
+        if (data.success && Array.isArray(data.items)) {
           setGalleryList(data.items);
         }
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error("Failed to load gallery from DB:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   // Sync category from URL param if given
@@ -50,7 +53,7 @@ function GalleryContent() {
       }
     });
     const list = Array.from(set);
-    return list.length > 0 ? ["All", ...list] : ["All", "Mobile", "Dashboard", "Systems"];
+    return ["All", ...list];
   }, [galleryList]);
 
   const filters = dynamicCategories;
@@ -124,8 +127,18 @@ function GalleryContent() {
           </div>
         </div>
 
-        {/* Masonry grid: 100% full width, height is auto to preserve natural image dimensions without cropping */}
-        {filtered.length > 0 ? (
+        {/* Masonry grid: 100% dynamic from database, full width with natural aspect ratio */}
+        {loading ? (
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="mb-6 rounded-2xl bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border animate-pulse"
+                style={{ height: `${220 + (i % 3) * 60}px` }}
+              />
+            ))}
+          </div>
+        ) : filtered.length > 0 ? (
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
             <AnimatePresence>
               {filtered.map((img, i) => (
@@ -169,17 +182,21 @@ function GalleryContent() {
           <div className="text-center py-20 border border-dashed border-border dark:border-dark-border rounded-3xl p-8">
             <Images size={36} className="mx-auto text-text-muted dark:text-white/30 mb-3" />
             <h3 className="font-clash text-lg font-bold text-text-primary dark:text-white mb-2">
-              No photos found for &ldquo;{filter}&rdquo;
+              {filter === "All" ? "No gallery photos found" : `No photos found for "${filter}"`}
             </h3>
             <p className="text-sm font-satoshi text-text-muted dark:text-white/50 mb-6">
-              Try selecting another category or view all gallery photos.
+              {filter === "All"
+                ? "Photos uploaded via the Admin Gallery dashboard will appear here."
+                : "Try selecting another category or view all gallery photos."}
             </p>
-            <button
-              onClick={() => setFilter("All")}
-              className="px-5 py-2 rounded-xl bg-accent-blue text-white text-xs font-satoshi font-bold"
-            >
-              Reset to All Photos
-            </button>
+            {filter !== "All" && (
+              <button
+                onClick={() => setFilter("All")}
+                className="px-5 py-2 rounded-xl bg-accent-blue text-white text-xs font-satoshi font-bold"
+              >
+                Reset to All Photos
+              </button>
+            )}
           </div>
         )}
       </div>
