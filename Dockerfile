@@ -21,6 +21,9 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV DATABASE_URL="file:/app/data/portfolio.db"
 
+# Create directories before build
+RUN mkdir -p /app/data /app/public/uploads
+
 # Build Next.js application
 RUN npm run build
 
@@ -49,4 +52,4 @@ COPY --from=base /app/prisma ./prisma
 EXPOSE 3000
 EXPOSE 80
 
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss --skip-generate && npx next start -H 0.0.0.0 -p ${PORT:-3000}"]
+CMD ["sh", "-c", "mkdir -p /app/data /app/public/uploads && (chmod -R 777 /app/data /app/public/uploads 2>/dev/null || true) && npx prisma db push --accept-data-loss --skip-generate && npx next start -H 0.0.0.0 -p ${PORT:-3000}"]
