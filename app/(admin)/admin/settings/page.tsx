@@ -15,13 +15,13 @@ export default function AdminSettingsPage() {
     heroTitle: "Senior Product Designer",
     heroRoles: "Senior Product Designer, UX Designer, UI Designer, Problem Solver, System Thinker",
     heroBio: "I design products that ship, scale, and move metrics. 6 years crafting experiences for 100M+ users at Atlassian, CRED, Swiggy & Razorpay.",
-    heroImage: "/hero-portrait.png",
+    heroImage: "",
     yearsExperience: "2+",
     totalDesignsCreated: "50+",
     email: "nitishtao@gmail.com",
     phone: "+91 98765 43210",
     latestProject: "CRED Pay 2.0",
-    resumeUrl: "/hero-portrait.png",
+    resumeUrl: "",
     googleDriveFolderUrl: "https://drive.google.com/drive/folders/sample",
     experienceHeadline: "Where I've worked.",
     experienceSubtitle: "6 years across product design, design systems, and UX research — from seed-stage startups to 100M-user platforms.",
@@ -207,13 +207,22 @@ export default function AdminSettingsPage() {
                 </label>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-3.5 rounded-lg border border-border/80 dark:border-dark-border bg-black/[0.02] dark:bg-white/[0.02]">
                   {/* Photo Preview */}
-                  <div className="relative w-20 h-24 rounded-lg overflow-hidden border border-border dark:border-dark-border bg-dark-card shrink-0">
-                    <img
-                      src={settings.heroImage || "/hero-portrait.png"}
-                      alt="Hero Profile"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                  <div className="relative w-20 h-24 rounded-lg overflow-hidden border border-border dark:border-dark-border bg-black/5 dark:bg-dark-card shrink-0 flex items-center justify-center">
+                    {settings.heroImage && settings.heroImage !== "/hero-portrait.png" ? (
+                      <>
+                        <img
+                          src={settings.heroImage}
+                          alt="Hero Profile"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-text-muted dark:text-white/40 text-[10px] text-center p-1">
+                        <Camera size={18} className="mb-1 opacity-50 text-accent-blue" />
+                        <span>No Photo</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex-1 space-y-2">
@@ -229,30 +238,32 @@ export default function AdminSettingsPage() {
                           className="hidden"
                         />
                       </label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSettings({ ...settings, heroImage: "/hero-portrait.png" });
-                          handleSave("heroImage", "/hero-portrait.png");
-                          toast.success("Reset to default portrait");
-                        }}
-                        className="px-2.5 py-1.5 rounded-md border border-border dark:border-dark-border text-text-muted dark:text-white/50 text-xs font-satoshi hover:text-text-primary dark:hover:text-white transition-colors"
-                      >
-                        Reset Default
-                      </button>
+                      {settings.heroImage && settings.heroImage !== "/hero-portrait.png" && (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            setSettings({ ...settings, heroImage: "" });
+                            await handleSave("heroImage", "");
+                            toast.success("Profile photo removed");
+                          }}
+                          className="px-2.5 py-1.5 rounded-md border border-red-500/30 text-red-500 hover:bg-red-500/10 text-xs font-satoshi transition-colors"
+                        >
+                          Remove Photo
+                        </button>
+                      )}
                     </div>
 
                     <div>
                       <input
                         type="text"
-                        value={settings.heroImage || ""}
+                        value={settings.heroImage === "/hero-portrait.png" ? "" : (settings.heroImage || "")}
                         onChange={(e) => setSettings({ ...settings, heroImage: e.target.value })}
                         placeholder="Image URL or uploaded file path"
                         className="w-full px-3 py-1.5 text-xs font-mono bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
                       />
                     </div>
                     <p className="text-[10px] font-satoshi text-text-muted dark:text-white/40">
-                      Syncs automatically to the homepage Hero Profile Card and the Admin TopBar Profile Avatar.
+                      Upload your transparent portrait PNG. It will appear on your homepage hero and admin profile.
                     </p>
                   </div>
                 </div>

@@ -380,7 +380,8 @@ async function main() {
     { key: "yearsExperience", value: "6+" },
     { key: "productsShipped", value: "40+" },
     { key: "usersImpacted", value: "100M+" },
-    { key: "resumeUrl", value: "/hero-portrait.png" },
+    { key: "resumeUrl", value: "/resume.pdf" },
+    { key: "heroImage", value: "" },
     { key: "googleDriveFolderUrl", value: "https://drive.google.com/drive/folders/sample" },
   ];
 

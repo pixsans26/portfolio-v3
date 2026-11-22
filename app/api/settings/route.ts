@@ -13,6 +13,11 @@ export async function GET() {
       }
     });
 
+    // Ensure default hero portrait is treated as empty
+    if (settingsMap.heroImage === "/hero-portrait.png") {
+      settingsMap.heroImage = "";
+    }
+
     return NextResponse.json({ success: true, settings: settingsMap });
   } catch (error) {
     console.error("Failed to fetch public settings:", error);

@@ -69,7 +69,7 @@ export default function Hero() {
     heroTitle: "Senior Product Designer",
     heroRoles: "Senior Product Designer, UX Designer, UI Designer, Problem Solver, System Thinker",
     heroBio: "I design products that ship, scale, and move metrics. 6 years crafting experiences for 100M+ users at Atlassian, CRED, Swiggy & Razorpay.",
-    heroImage: "/hero-portrait.png",
+    heroImage: "",
     yearsExperience: "2+",
     totalDesignsCreated: "50+",
     email: "nitishtao@gmail.com",
@@ -474,22 +474,24 @@ export default function Hero() {
                   FRAME 1: Main Portrait / Transparent Cutout PNG Placeholder
                   Swappable with any transparent PNG cutout. Reacts to mouse tilt.
                  ───────────────────────────────────────────────────────────── */}
-              <motion.div
-                animate={{
-                  x: mousePos.x * 24,
-                  y: mousePos.y * 22,
-                  rotateX: -mousePos.y * 10,
-                  rotateY: mousePos.x * 12,
-                }}
-                transition={{ type: "spring", stiffness: 140, damping: 22 }}
-                className="relative z-10 w-full max-w-[380px] sm:max-w-[420px] aspect-[4/5] flex items-center justify-center select-none"
-              >
-                <img
-                  src={siteSettings.heroImage || "/hero-portrait.png"}
-                  alt={siteSettings.heroName || "Hero transparent portrait cutout"}
-                  className="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)] dark:drop-shadow-[0_20px_50px_rgba(79,142,247,0.22)] pointer-events-none transition-transform duration-300"
-                />
-              </motion.div>
+              {siteSettings.heroImage && siteSettings.heroImage !== "/hero-portrait.png" ? (
+                <motion.div
+                  animate={{
+                    x: mousePos.x * 24,
+                    y: mousePos.y * 22,
+                    rotateX: -mousePos.y * 10,
+                    rotateY: mousePos.x * 12,
+                  }}
+                  transition={{ type: "spring", stiffness: 140, damping: 22 }}
+                  className="relative z-10 w-full max-w-[380px] sm:max-w-[420px] aspect-[4/5] flex items-center justify-center select-none"
+                >
+                  <img
+                    src={siteSettings.heroImage}
+                    alt={siteSettings.heroName || "Hero transparent portrait cutout"}
+                    className="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)] dark:drop-shadow-[0_20px_50px_rgba(79,142,247,0.22)] pointer-events-none transition-transform duration-300"
+                  />
+                </motion.div>
+              ) : null}
 
               {/* ─────────────────────────────────────────────────────────────
                   FRAME 2: Top-Right Floating UI Frame / Device Mockup Placeholder

@@ -46,7 +46,7 @@ export default function AdminTopBar() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [profilePhoto, setProfilePhoto] = useState<string>("/hero-portrait.png");
+  const [profilePhoto, setProfilePhoto] = useState<string>("");
   const [adminName, setAdminName] = useState<string>("Nitish Tao");
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -234,7 +234,7 @@ export default function AdminTopBar() {
               className="flex items-center gap-2 pl-1.5 pr-2.5 py-1.5 rounded-lg border border-border dark:border-dark-border bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
             >
               <div className="w-6 h-6 rounded-md overflow-hidden bg-accent-blue text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
-                {profilePhoto ? (
+                {profilePhoto && profilePhoto !== "/hero-portrait.png" ? (
                   <img src={profilePhoto} alt={adminName} className="w-full h-full object-cover" />
                 ) : (
                   adminName.slice(0, 2).toUpperCase()
@@ -252,7 +252,7 @@ export default function AdminTopBar() {
                 {/* Header User info */}
                 <div className="px-3.5 py-2.5 border-b border-border dark:border-dark-border flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg overflow-hidden bg-accent-blue text-white flex items-center justify-center font-bold text-sm shrink-0 border border-border dark:border-dark-border">
-                    {profilePhoto ? (
+                    {profilePhoto && profilePhoto !== "/hero-portrait.png" ? (
                       <img src={profilePhoto} alt={adminName} className="w-full h-full object-cover" />
                     ) : (
                       adminName.slice(0, 2).toUpperCase()

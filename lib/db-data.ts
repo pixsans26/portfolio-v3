@@ -321,7 +321,7 @@ export async function getDbSettings(): Promise<SiteSettings> {
     usersImpacted: "100M+",
     email: "admin@portfolio.com",
     resumeUrl: "/resume.pdf",
-    heroImage: "/hero-portrait.png",
+    heroImage: "",
   };
 
   try {
@@ -330,6 +330,9 @@ export async function getDbSettings(): Promise<SiteSettings> {
     for (const item of list) {
       map[item.key] = item.value;
     }
+
+    const heroImageRaw = map.heroImage || "";
+    const cleanHeroImage = heroImageRaw === "/hero-portrait.png" ? "" : heroImageRaw;
 
     return {
       heroName: map.heroName || defaults.heroName,
@@ -341,7 +344,7 @@ export async function getDbSettings(): Promise<SiteSettings> {
       usersImpacted: map.usersImpacted || defaults.usersImpacted,
       email: map.adminEmail || defaults.email,
       resumeUrl: map.resumeUrl || defaults.resumeUrl,
-      heroImage: map.heroImage || defaults.heroImage,
+      heroImage: cleanHeroImage,
     };
   } catch (error) {
     console.error("getDbSettings error:", error);

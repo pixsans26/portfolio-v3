@@ -22,7 +22,7 @@ import {
 export default function AdminSidebar() {
   const pathname = usePathname();
   const [unreadCount, setUnreadCount] = useState(0);
-  const [adminPhoto, setAdminPhoto] = useState<string>("/hero-portrait.png");
+  const [adminPhoto, setAdminPhoto] = useState<string>("");
   const [adminName, setAdminName] = useState<string>("Nitish Tao");
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function AdminSidebar() {
         {/* Brand */}
         <div className="flex items-center gap-2.5 px-2 mb-6 pt-2">
           <div className="w-8 h-8 rounded-md overflow-hidden bg-accent-blue text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0 border border-border dark:border-dark-border">
-            {adminPhoto ? (
+            {adminPhoto && adminPhoto !== "/hero-portrait.png" ? (
               <img src={adminPhoto} alt={adminName} className="w-full h-full object-cover" />
             ) : (
               <Database size={16} />
