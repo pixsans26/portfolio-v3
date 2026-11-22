@@ -48,6 +48,13 @@ export default function AdminExperiencePage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Section Header State (Dynamic Headline & Subtitle)
+  const [sectionHeadline, setSectionHeadline] = useState("Where I've worked.");
+  const [sectionSubtitle, setSectionSubtitle] = useState(
+    "6 years across product design, design systems, and UX research — from seed-stage startups to 100M-user platforms."
+  );
+  const [savingHeader, setSavingHeader] = useState(false);
+
   // Form State
   const initialForm = {
     company: "",
@@ -78,7 +85,44 @@ export default function AdminExperiencePage() {
 
   useEffect(() => {
     fetchExp();
+    fetch("/api/admin/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.settings) {
+          if (data.settings.experienceHeadline || data.settings.experience_headline) {
+            setSectionHeadline(data.settings.experienceHeadline || data.settings.experience_headline);
+          }
+          if (data.settings.experienceSubtitle || data.settings.experience_subtitle) {
+            setSectionSubtitle(data.settings.experienceSubtitle || data.settings.experience_subtitle);
+          }
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  const handleSaveHeader = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingHeader(true);
+    try {
+      await Promise.all([
+        fetch("/api/admin/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: "experienceHeadline", value: sectionHeadline }),
+        }),
+        fetch("/api/admin/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: "experienceSubtitle", value: sectionSubtitle }),
+        }),
+      ]);
+      toast.success("Experience section headline & subtitle updated!");
+    } catch {
+      toast.error("Failed to update section header");
+    } finally {
+      setSavingHeader(false);
+    }
+  };
 
   const filteredExperiences = useMemo(() => {
     return experiences
@@ -203,6 +247,60 @@ export default function AdminExperiencePage() {
           <span>Add Experience</span>
         </button>
       </header>
+
+      {/* Experience Section Header Settings (Dynamic Headline & Subtitle) */}
+      <form
+        onSubmit={handleSaveHeader}
+        className="p-4 bg-white dark:bg-dark-card border border-border dark:border-dark-border rounded-lg shadow-sm space-y-3"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-border dark:border-dark-border">
+          <div>
+            <h3 className="font-clash font-bold text-xs uppercase tracking-wider text-text-primary dark:text-white flex items-center gap-2">
+              <Building2 size={14} className="text-accent-blue" />
+              <span>Public Website Section Header</span>
+            </h3>
+            <p className="text-[11px] font-satoshi text-text-muted dark:text-white/50">
+              Customize the section title and descriptive subtitle displayed on the public portfolio homepage.
+            </p>
+          </div>
+          <button
+            type="submit"
+            disabled={savingHeader}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-accent-blue text-white font-satoshi font-semibold text-xs hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50 self-start sm:self-auto"
+          >
+            {savingHeader ? "Saving..." : "Save Header Settings"}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <div>
+            <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+              Section Title / Heading
+            </label>
+            <input
+              type="text"
+              required
+              value={sectionHeadline}
+              onChange={(e) => setSectionHeadline(e.target.value)}
+              placeholder="Where I've worked."
+              className="w-full px-3 py-1.5 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+              Section Subtitle / Description
+            </label>
+            <input
+              type="text"
+              required
+              value={sectionSubtitle}
+              onChange={(e) => setSectionSubtitle(e.target.value)}
+              placeholder="6 years across product design, design systems, and UX research — from seed-stage startups to 100M-user platforms."
+              className="w-full px-3 py-1.5 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+            />
+          </div>
+        </div>
+      </form>
 
       {/* Toolbar */}
       <div className="p-3 bg-white dark:bg-dark-card border border-border dark:border-dark-border rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">

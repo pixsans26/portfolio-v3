@@ -23,6 +23,8 @@ export default function AdminSettingsPage() {
     latestProject: "CRED Pay 2.0",
     resumeUrl: "/hero-portrait.png",
     googleDriveFolderUrl: "https://drive.google.com/drive/folders/sample",
+    experienceHeadline: "Where I've worked.",
+    experienceSubtitle: "6 years across product design, design systems, and UX research — from seed-stage startups to 100M-user platforms.",
   });
 
   useEffect(() => {
@@ -346,6 +348,47 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSettings({ ...settings, latestProject: e.target.value })}
                     placeholder="e.g. CRED Pay 2.0"
                     className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Experience Section Headline & Subtitle Card */}
+            <div className="p-5 rounded-lg border border-border dark:border-dark-border bg-white dark:bg-dark-card shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-border dark:border-dark-border">
+                <h2 className="font-clash font-bold text-sm text-text-primary dark:text-white">
+                  Experience Section Header (Homepage)
+                </h2>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-accent-blue/10 text-accent-blue font-bold">
+                  Displayed above Experience Timeline
+                </span>
+              </div>
+              <p className="text-xs text-text-muted dark:text-white/50 font-satoshi">
+                Customize the headline and descriptive subtitle displayed on the public website homepage Experience section.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                    Experience Section Title / Headline
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.experienceHeadline}
+                    onChange={(e) => setSettings({ ...settings, experienceHeadline: e.target.value })}
+                    placeholder="Where I've worked."
+                    className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                    Experience Section Subtitle / Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={settings.experienceSubtitle}
+                    onChange={(e) => setSettings({ ...settings, experienceSubtitle: e.target.value })}
+                    placeholder="6 years across product design, design systems, and UX research — from seed-stage startups to 100M-user platforms."
+                    className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue leading-relaxed"
                   />
                 </div>
               </div>

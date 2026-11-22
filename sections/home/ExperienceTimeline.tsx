@@ -13,6 +13,11 @@ const companyLogoMap: Record<string, LucideIcon> = {
 
 export default function ExperienceTimeline() {
   const [expList, setExpList] = useState<any[]>([]);
+  const [headline, setHeadline] = useState("Where I've worked.");
+  const [subtitle, setSubtitle] = useState(
+    "6 years across product design, design systems, and UX research — from seed-stage startups to 100M-user platforms."
+  );
+
   const sectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -24,8 +29,12 @@ export default function ExperienceTimeline() {
     fetch("/api/experience")
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.experiences && data.experiences.length > 0) {
-          setExpList(data.experiences);
+        if (data.success) {
+          if (data.experiences && data.experiences.length > 0) {
+            setExpList(data.experiences);
+          }
+          if (data.headline) setHeadline(data.headline);
+          if (data.subtitle) setSubtitle(data.subtitle);
         }
       })
       .catch(() => {});
@@ -52,17 +61,16 @@ export default function ExperienceTimeline() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              Where I&apos;ve worked.
+              {headline}
             </motion.h2>
             <motion.p
-              className="text-text-muted dark:text-white/50 font-satoshi text-body leading-relaxed"
+              className="text-text-muted dark:text-white/50 font-satoshi text-body leading-relaxed whitespace-pre-line"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              6 years across product design, design systems, and UX research — from seed-stage
-              startups to 100M-user platforms.
+              {subtitle}
             </motion.p>
           </div>
 
