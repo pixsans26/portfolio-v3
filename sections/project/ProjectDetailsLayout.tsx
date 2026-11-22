@@ -157,13 +157,10 @@ export default function ProjectDetailsLayout({
               )}
             </div>
 
-            {/* Title & Description */}
-            <h1 className="font-clash text-display font-bold text-white mb-3 max-w-3xl leading-tight text-center">
+            {/* Title */}
+            <h1 className="font-clash text-display font-bold text-white mb-6 max-w-3xl leading-tight text-center">
               {project.title}
             </h1>
-            <p className="text-white/80 font-satoshi text-body-lg max-w-2xl leading-relaxed mb-6 text-center">
-              {project.subtitle || project.description}
-            </p>
 
             {/* Action Buttons: View Live & Interactive Prototype */}
             <div className="flex flex-wrap items-center justify-center gap-3">
