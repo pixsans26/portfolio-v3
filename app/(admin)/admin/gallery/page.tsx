@@ -58,7 +58,7 @@ export default function AdminGalleryPage() {
 
   // Form State
   const initialForm = {
-    src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
+    src: "",
     alt: "",
     category: "Mobile",
     customCategory: "",
@@ -183,6 +183,17 @@ export default function AdminGalleryPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.src.trim()) {
+      toast.error("Please upload a photo first");
+      return;
+    }
+
+    if (!formData.alt.trim()) {
+      toast.error("Please provide a title or caption for the photo");
+      return;
+    }
+
     setSaving(true);
 
     const finalCategory =
@@ -586,23 +597,61 @@ export default function AdminGalleryPage() {
 
             {/* Modal Body */}
             <form onSubmit={handleSubmit} className="p-5 space-y-4 max-h-[80vh] overflow-y-auto">
-              {/* Photo Preview & Upload */}
+              {/* Photo Upload Area - Direct File Upload Only */}
               <div>
                 <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1.5">
-                  Gallery Photo Image
+                  Gallery Photo *
                 </label>
-                <div className="relative h-44 w-full rounded-lg overflow-hidden border border-border dark:border-dark-border bg-black/5 dark:bg-white/5 mb-2.5">
-                  <img
-                    src={formData.src}
-                    alt="Preview"
-                    className="w-full h-full object-contain bg-black/20"
-                  />
-                </div>
 
-                <div className="flex gap-2">
-                  <label className="flex-1 cursor-pointer inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-border dark:border-dark-border text-xs font-satoshi font-medium text-text-primary dark:text-white transition-colors">
-                    <Upload size={13} />
-                    <span>{uploading ? "Uploading..." : "Upload New File"}</span>
+                {formData.src ? (
+                  <div className="space-y-2">
+                    <div className="relative h-48 w-full rounded-lg overflow-hidden border border-border dark:border-dark-border bg-black/5 dark:bg-white/5 flex items-center justify-center">
+                      <img
+                        src={formData.src}
+                        alt="Preview"
+                        className="w-full h-full object-contain bg-black/10 dark:bg-black/40"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between gap-2 p-2 rounded-md bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border text-xs">
+                      <span className="font-mono text-[11px] truncate text-text-muted dark:text-white/60">
+                        {formData.src}
+                      </span>
+                      <label className="cursor-pointer shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-accent-blue text-white text-xs font-satoshi font-semibold hover:opacity-90 transition-opacity">
+                        <Upload size={12} />
+                        <span>{uploading ? "Uploading..." : "Replace Photo"}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                          disabled={uploading}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                ) : (
+                  <label
+                    className={`flex flex-col items-center justify-center gap-2.5 p-6 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+                      uploading
+                        ? "border-accent-blue bg-accent-blue/5"
+                        : "border-border dark:border-dark-border hover:border-accent-blue hover:bg-black/[0.02] dark:hover:bg-white/[0.02]"
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-accent-blue/10 flex items-center justify-center text-accent-blue">
+                      {uploading ? (
+                        <div className="w-5 h-5 rounded-full border-2 border-accent-blue border-t-transparent animate-spin" />
+                      ) : (
+                        <Upload size={18} />
+                      )}
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs font-satoshi font-semibold text-text-primary dark:text-white">
+                        {uploading ? "Uploading photo to server..." : "Click or drag & drop to upload photo"}
+                      </p>
+                      <p className="text-[11px] font-satoshi text-text-muted dark:text-white/40 mt-0.5">
+                        PNG, JPG, JPEG, WEBP, SVG, GIF (up to 50MB)
+                      </p>
+                    </div>
                     <input
                       type="file"
                       accept="image/*"
@@ -611,22 +660,7 @@ export default function AdminGalleryPage() {
                       disabled={uploading}
                     />
                   </label>
-                </div>
-              </div>
-
-              {/* Direct URL */}
-              <div>
-                <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
-                  Or Image Source URL
-                </label>
-                <input
-                  type="url"
-                  required
-                  value={formData.src}
-                  onChange={(e) => setFormData({ ...formData, src: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
-                />
+                )}
               </div>
 
               {/* Title / Alt */}

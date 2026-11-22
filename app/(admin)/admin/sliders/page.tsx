@@ -56,7 +56,7 @@ export default function AdminSlidersPage() {
 
   // Form State
   const initialForm = {
-    src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
+    src: "",
     alt: "",
     category: "Hero Slide",
     order: 1,
@@ -165,6 +165,17 @@ export default function AdminSlidersPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.src.trim()) {
+      toast.error("Please upload a slide photo first");
+      return;
+    }
+
+    if (!formData.alt.trim()) {
+      toast.error("Please enter a caption / title");
+      return;
+    }
+
     setSaving(true);
 
     const payload = {
@@ -574,21 +585,15 @@ export default function AdminSlidersPage() {
                   </div>
                   <div className="space-y-1.5 flex-1 w-full">
                     <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-accent-blue text-white text-xs font-satoshi font-semibold hover:opacity-90 transition-opacity shadow-sm">
-                      <Upload size={13} /> Upload Slider Photo (1200×750)
-                      <input type="file" onChange={handleFileUpload} className="hidden" accept="image/*" />
+                      <Upload size={13} /> {formData.src ? "Replace Slider Photo" : "Upload Slider Photo (1200×750)"}
+                      <input type="file" onChange={handleFileUpload} className="hidden" accept="image/*" disabled={uploading} />
                     </label>
                     {uploading && <span className="text-xs font-satoshi text-accent-blue ml-2">Uploading...</span>}
-                    <div className="flex items-center gap-1.5 pt-1">
-                      <LinkIcon size={13} className="text-text-muted dark:text-white/40 shrink-0" />
-                      <input
-                        type="text"
-                        required
-                        value={formData.src}
-                        onChange={(e) => setFormData({ ...formData, src: e.target.value })}
-                        placeholder="Or paste direct image URL"
-                        className="w-full px-2.5 py-1 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
-                      />
-                    </div>
+                    {formData.src && (
+                      <div className="font-mono text-[11px] truncate text-text-muted dark:text-white/60 pt-1">
+                        {formData.src}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

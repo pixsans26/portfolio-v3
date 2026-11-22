@@ -3,7 +3,6 @@ import { writeFile, mkdir, rm } from "fs/promises";
 import path from "path";
 import JSZip from "jszip";
 import { prisma } from "@/lib/prisma";
-import { convertToWebP } from "@/lib/image-optimizer";
 
 export async function POST(req: Request) {
   try {
@@ -42,14 +41,12 @@ export async function POST(req: Request) {
       const zipFile = zip.files[entryName];
       const rawBuffer = await zipFile.async("nodebuffer");
 
-      // Convert sequence frames to WebP for maximum browser rendering speed and minimal file size
-      const optimized = await convertToWebP(rawBuffer, entryName, { quality: 85, effort: 3 });
-
+      const ext = path.extname(entryName).toLowerCase() || ".webp";
       const padNum = String(i + 1).padStart(3, "0");
-      const fileName = `frame_${padNum}.webp`;
+      const fileName = `frame_${padNum}${ext}`;
       const filePath = path.join(sequenceDir, fileName);
 
-      await writeFile(filePath, optimized.buffer);
+      await writeFile(filePath, rawBuffer);
       savedCount++;
     }
 

@@ -1,11 +1,10 @@
-import sharp from "sharp";
 import path from "path";
 
 export interface OptimizedImageResult {
   buffer: Buffer;
   fileName: string;
   originalName: string;
-  format: "webp" | "svg";
+  format: "webp" | "svg" | string;
   contentType: string;
   width?: number;
   height?: number;
@@ -14,27 +13,14 @@ export interface OptimizedImageResult {
 }
 
 export interface ConvertOptions {
-  /**
-   * WebP compression quality from 1 to 100 (default: 85)
-   */
   quality?: number;
-  /**
-   * Maximum allowed width in pixels. If larger, scales down while keeping aspect ratio.
-   */
   maxWidth?: number;
-  /**
-   * Maximum allowed height in pixels.
-   */
   maxHeight?: number;
-  /**
-   * Compression effort 0-6 (higher is slower but smaller file, default: 4)
-   */
   effort?: number;
 }
 
 /**
- * Converts any uploaded image (PNG, JPEG, GIF, TIFF, BMP, AVIF, WebP) to an optimized WebP format.
- * Vector SVGs are preserved as SVG.
+ * Attempts to convert image to WebP if sharp is available, otherwise returns original buffer safely.
  */
 export async function convertToWebP(
   inputBuffer: Buffer,
@@ -43,11 +29,12 @@ export async function convertToWebP(
 ): Promise<OptimizedImageResult> {
   const originalSize = inputBuffer.length;
   const ext = path.extname(originalFilename).toLowerCase();
-  const baseName = path.basename(originalFilename, ext)
-    .replace(/[^a-zA-Z0-9_-]/g, "_")
-    .replace(/^_+|_+$/g, "") || "image";
+  const baseName =
+    path
+      .basename(originalFilename, ext)
+      .replace(/[^a-zA-Z0-9_-]/g, "_")
+      .replace(/^_+|_+$/g, "") || "image";
 
-  // Vector SVGs should remain SVG
   if (ext === ".svg") {
     return {
       buffer: inputBuffer,
@@ -61,12 +48,11 @@ export async function convertToWebP(
   }
 
   try {
-    let pipeline = sharp(inputBuffer);
+    const sharpModule = await import("sharp");
+    const sharp = sharpModule.default;
 
-    // Rotate automatically based on EXIF metadata if phone photo
-    pipeline = pipeline.rotate();
+    let pipeline = sharp(inputBuffer).rotate();
 
-    // Optional resize to prevent massive 50MB camera uploads from bogging down bandwidth
     const maxWidth = options?.maxWidth ?? 2560;
     const maxHeight = options?.maxHeight ?? 2560;
 
@@ -102,13 +88,12 @@ export async function convertToWebP(
       optimizedSize: webpBuffer.length,
     };
   } catch (err) {
-    console.warn(`[image-optimizer] Failed to convert ${originalFilename} to WebP:`, err);
-    // Graceful fallback to original buffer if sharp fails on an unexpected format
+    console.warn(`[image-optimizer] Sharp conversion skipped or unavailable for ${originalFilename}:`, err);
     return {
       buffer: inputBuffer,
       fileName: `${baseName}${ext || ".png"}`,
       originalName: originalFilename,
-      format: ext === ".svg" ? "svg" : "webp",
+      format: ext ? ext.replace(".", "") : "png",
       contentType: "application/octet-stream",
       originalSize,
       optimizedSize: originalSize,
