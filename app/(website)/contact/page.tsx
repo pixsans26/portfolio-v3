@@ -57,20 +57,20 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-dark pt-32 pb-24">
+    <div className="min-h-screen bg-bg dark:bg-dark text-text-primary dark:text-white pt-32 pb-24 transition-colors duration-300">
       <div className="container-custom">
-        <div className="grid lg:grid-cols-2 gap-20 items-start">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left */}
-          <div>
+          <div className="text-left">
             <motion.span
-              className="text-white/40 text-xs font-satoshi uppercase tracking-[0.2em] block mb-4"
+              className="text-text-muted dark:text-white/40 text-xs font-satoshi uppercase tracking-[0.2em] block mb-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
               Get in touch
             </motion.span>
             <motion.h1
-              className="font-clash text-display font-bold text-white mb-8 leading-none"
+              className="font-clash text-display font-bold text-text-primary dark:text-white mb-8 leading-none"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
@@ -78,7 +78,7 @@ export default function ContactPage() {
               Let&apos;s talk.
             </motion.h1>
             <motion.p
-              className="text-white/60 font-satoshi text-body-lg leading-relaxed mb-12"
+              className="text-text-secondary dark:text-white/60 font-satoshi text-body-lg leading-relaxed mb-12"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -100,24 +100,24 @@ export default function ContactPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <span className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-white group-hover:bg-accent-blue transition-colors">
+                  <span className="w-12 h-12 rounded-2xl bg-black/5 dark:bg-white/10 flex items-center justify-center text-text-primary dark:text-white group-hover:bg-accent-blue group-hover:text-white transition-colors border border-border dark:border-white/10">
                     {getPlatformIcon(c.platform)}
                   </span>
                   <div>
-                    <p className="text-white/40 text-xs font-satoshi uppercase tracking-wider">{c.platform}</p>
-                    <p className="text-white font-satoshi font-medium text-sm group-hover:text-accent-blue transition-colors truncate max-w-xs">{c.url}</p>
+                    <p className="text-text-muted dark:text-white/40 text-xs font-satoshi uppercase tracking-wider">{c.platform}</p>
+                    <p className="text-text-primary dark:text-white font-satoshi font-medium text-sm group-hover:text-accent-blue transition-colors truncate max-w-xs">{c.url}</p>
                   </div>
                 </motion.a>
               ))}
             </div>
 
             {/* Availability */}
-            <div className="mt-12 p-6 rounded-3xl border border-white/10">
+            <div className="mt-12 p-6 rounded-3xl border border-border dark:border-white/10 bg-white/50 dark:bg-white/[0.02]">
               <div className="flex items-center gap-2 mb-3">
                 <span className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
                 <span className="text-accent-green text-sm font-satoshi font-semibold">Available</span>
               </div>
-              <p className="text-white/60 font-satoshi text-sm leading-relaxed">
+              <p className="text-text-secondary dark:text-white/60 font-satoshi text-sm leading-relaxed">
                 Open to Senior Product Designer and Design Systems Lead roles. Currently based in India, 
                 open to remote and hybrid opportunities globally.
               </p>
@@ -129,19 +129,24 @@ export default function ContactPage() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-left"
           >
             <form
               onSubmit={handleSubmit}
-              className="p-8 rounded-4xl bg-dark-card border border-dark-border space-y-5"
+              className="p-8 md:p-10 rounded-4xl bg-white dark:bg-[#12131A] border border-border dark:border-white/10 shadow-card space-y-6"
             >
-              <h2 className="font-clash text-2xl font-bold text-white mb-2">Send a message</h2>
-              <p className="text-white/40 text-sm font-satoshi mb-6">I respond within 24 hours.</p>
+              <div>
+                <h2 className="font-clash text-2xl font-bold text-text-primary dark:text-white mb-2">Send a message</h2>
+                <p className="text-text-muted dark:text-white/40 text-sm font-satoshi">I respond within 24 hours.</p>
+              </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-white/60 text-xs font-satoshi uppercase tracking-wider block mb-2">Name *</label>
+                  <label className="text-text-primary dark:text-white/80 text-xs font-satoshi font-semibold uppercase tracking-wider block mb-2">
+                    Name *
+                  </label>
                   <input
-                    className="form-input dark:bg-dark dark:text-white dark:border-dark-border"
+                    className="w-full px-4 py-3.5 rounded-xl text-sm font-satoshi bg-slate-50 dark:bg-white/[0.06] border border-slate-200 dark:border-white/15 text-text-primary dark:text-white placeholder:text-text-muted dark:placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-accent-blue/30 focus:border-accent-blue transition-all"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     placeholder="Your name"
@@ -149,10 +154,12 @@ export default function ContactPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-white/60 text-xs font-satoshi uppercase tracking-wider block mb-2">Email *</label>
+                  <label className="text-text-primary dark:text-white/80 text-xs font-satoshi font-semibold uppercase tracking-wider block mb-2">
+                    Email *
+                  </label>
                   <input
                     type="email"
-                    className="form-input dark:bg-dark dark:text-white dark:border-dark-border"
+                    className="w-full px-4 py-3.5 rounded-xl text-sm font-satoshi bg-slate-50 dark:bg-white/[0.06] border border-slate-200 dark:border-white/15 text-text-primary dark:text-white placeholder:text-text-muted dark:placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-accent-blue/30 focus:border-accent-blue transition-all"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     placeholder="you@company.com"
@@ -162,9 +169,11 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="text-white/60 text-xs font-satoshi uppercase tracking-wider block mb-2">Company</label>
+                <label className="text-text-primary dark:text-white/80 text-xs font-satoshi font-semibold uppercase tracking-wider block mb-2">
+                  Company
+                </label>
                 <input
-                  className="form-input dark:bg-dark dark:text-white dark:border-dark-border"
+                  className="w-full px-4 py-3.5 rounded-xl text-sm font-satoshi bg-slate-50 dark:bg-white/[0.06] border border-slate-200 dark:border-white/15 text-text-primary dark:text-white placeholder:text-text-muted dark:placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-accent-blue/30 focus:border-accent-blue transition-all"
                   value={form.company}
                   onChange={(e) => setForm({ ...form, company: e.target.value })}
                   placeholder="Your company"
@@ -172,22 +181,26 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="text-white/60 text-xs font-satoshi uppercase tracking-wider block mb-2">Type of enquiry</label>
+                <label className="text-text-primary dark:text-white/80 text-xs font-satoshi font-semibold uppercase tracking-wider block mb-2">
+                  Type of enquiry
+                </label>
                 <select
-                  className="form-input dark:bg-dark dark:text-white dark:border-dark-border"
+                  className="w-full px-4 py-3.5 rounded-xl text-sm font-satoshi bg-slate-50 dark:bg-[#1A1C24] border border-slate-200 dark:border-white/15 text-text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-blue/30 focus:border-accent-blue transition-all cursor-pointer"
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
                 >
                   {["Full-time role", "Freelance project", "Collaboration", "Speaking opportunity", "Other"].map((t) => (
-                    <option key={t} value={t}>{t}</option>
+                    <option key={t} value={t} className="bg-white dark:bg-dark text-text-primary dark:text-white">{t}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="text-white/60 text-xs font-satoshi uppercase tracking-wider block mb-2">Message *</label>
+                <label className="text-text-primary dark:text-white/80 text-xs font-satoshi font-semibold uppercase tracking-wider block mb-2">
+                  Message *
+                </label>
                 <textarea
-                  className="form-input dark:bg-dark dark:text-white dark:border-dark-border resize-none"
+                  className="w-full px-4 py-3.5 rounded-xl text-sm font-satoshi bg-slate-50 dark:bg-white/[0.06] border border-slate-200 dark:border-white/15 text-text-primary dark:text-white placeholder:text-text-muted dark:placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-accent-blue/30 focus:border-accent-blue transition-all resize-none"
                   rows={5}
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
@@ -199,7 +212,7 @@ export default function ContactPage() {
               <motion.button
                 type="submit"
                 disabled={sending}
-                className="w-full py-4 rounded-2xl bg-white text-dark font-satoshi font-bold text-base hover:bg-accent-blue hover:text-white transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-xl bg-accent-blue text-white font-satoshi font-bold text-base hover:opacity-95 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-accent-blue/20 cursor-pointer"
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
