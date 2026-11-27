@@ -84,15 +84,23 @@ export default function AdminCaseStudiesPage() {
 
   // Photo sequence upload state
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const [photoUrlInput, setPhotoUrlInput] = useState("");
 
-  // Clean Form State: project, photos in sequence, prototype links, optional note
+  // Clean Form State: create directly from scratch or optionally link existing project
   const initialForm = {
-    projectId: "",
+    title: "",
+    company: "",
+    role: "Lead Product Designer",
+    year: new Date().getFullYear().toString(),
+    coverImage: "",
+    tags: "Mobile Apps, Fintech, Design System",
+    overviewNote: "",
     photos: [] as string[],
     prototype: "",
     figmaEmbed: "",
-    overviewNote: "",
+    liveUrl: "",
+    projectId: "", // empty means create new project for this case study
   };
   const [formData, setFormData] = useState(initialForm);
 
@@ -174,15 +182,8 @@ export default function AdminCaseStudiesPage() {
   }, [projectsList, formData.projectId]);
 
   const handleOpenCreate = () => {
-    const availableProject = projectsList.find((p) => !p.hasCaseStudy) || projectsList[0];
     setActiveItem(null);
-    setFormData({
-      projectId: availableProject?.id || "",
-      photos: [],
-      prototype: "",
-      figmaEmbed: "",
-      overviewNote: "",
-    });
+    setFormData(initialForm);
     setPhotoUrlInput("");
     setModalMode("create");
   };
@@ -218,15 +219,60 @@ export default function AdminCaseStudiesPage() {
       } catch {}
     }
 
+    let parsedTags = "Mobile Apps, UI/UX";
+    if (item.project.tags) {
+      try {
+        if (item.project.tags.startsWith("[")) {
+          parsedTags = JSON.parse(item.project.tags).join(", ");
+        } else {
+          parsedTags = item.project.tags;
+        }
+      } catch {
+        parsedTags = item.project.tags;
+      }
+    }
+
     setFormData({
-      projectId: item.projectId,
+      title: item.project.title || "",
+      company: item.project.company || "",
+      role: item.project.role || "Lead Product Designer",
+      year: item.project.year || new Date().getFullYear().toString(),
+      coverImage: item.project.coverImage || "",
+      tags: parsedTags,
+      overviewNote: item.problem || item.project.overview || item.project.description || "",
       photos: parsedPhotos,
-      prototype: item.prototype || "",
+      prototype: item.prototype || item.project.prototypeUrl || "",
       figmaEmbed: item.figmaEmbed || "",
-      overviewNote: item.problem || "",
+      liveUrl: item.project.liveUrl || "",
+      projectId: item.projectId,
     });
     setPhotoUrlInput("");
     setModalMode("edit");
+  };
+
+  // Upload single Cover Image
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingCover(true);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setFormData((prev) => ({ ...prev, coverImage: data.url }));
+        toast.success("Cover image uploaded!");
+      } else {
+        toast.error(data.error || "Failed to upload cover image");
+      }
+    } catch {
+      toast.error("Failed to upload cover image");
+    } finally {
+      setUploadingCover(false);
+      e.target.value = "";
+    }
   };
 
   // Upload sequence of photos (Auto WebP conversion)
@@ -250,6 +296,7 @@ export default function AdminCaseStudiesPage() {
         setFormData((prev) => ({
           ...prev,
           photos: [...prev.photos, ...uploadedUrls],
+          coverImage: prev.coverImage || uploadedUrls[0],
         }));
         toast.success(`Added ${uploadedUrls.length} photo(s) to sequence (optimized to WebP)!`);
       }
@@ -267,6 +314,7 @@ export default function AdminCaseStudiesPage() {
     setFormData((prev) => ({
       ...prev,
       photos: [...prev.photos, url],
+      coverImage: prev.coverImage || url,
     }));
     setPhotoUrlInput("");
     toast.success("Photo added to sequence");
@@ -296,16 +344,29 @@ export default function AdminCaseStudiesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
+    if (!formData.title.trim()) {
+      toast.error("Please enter a Case Study Title");
+      return;
+    }
 
+    setSaving(true);
     const payload = {
-      projectId: formData.projectId,
-      hiFidelity: formData.photos,
-      wireframes: [],
-      prototype: formData.prototype || null,
-      figmaEmbed: formData.figmaEmbed || null,
-      problem: formData.overviewNote || selectedProject?.overview || selectedProject?.description || "",
       id: activeItem?.id,
+      projectId: formData.projectId || undefined,
+      title: formData.title.trim(),
+      company: formData.company.trim() || "Independent Case Study",
+      role: formData.role.trim() || "Lead Product Designer",
+      year: formData.year.trim() || new Date().getFullYear().toString(),
+      coverImage: formData.coverImage.trim() || (formData.photos.length > 0 ? formData.photos[0] : ""),
+      tags: formData.tags.trim() || "Case Study",
+      problem: formData.overviewNote || "",
+      overviewNote: formData.overviewNote || "",
+      hiFidelity: formData.photos,
+      photos: formData.photos,
+      wireframes: [],
+      prototype: formData.prototype.trim() || null,
+      figmaEmbed: formData.figmaEmbed.trim() || null,
+      liveUrl: formData.liveUrl.trim() || null,
     };
 
     try {
@@ -316,7 +377,7 @@ export default function AdminCaseStudiesPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(modalMode === "create" ? "Case study created!" : "Case study updated!");
+        toast.success(modalMode === "create" ? "Case study created from scratch!" : "Case study updated!");
         setModalMode(null);
         fetchData();
       } else {
@@ -620,86 +681,210 @@ export default function AdminCaseStudiesPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Linked Project Select */}
-              <div>
-                <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1.5">
-                  Associated Project *
-                </label>
-                <select
-                  disabled={modalMode === "edit"}
-                  value={formData.projectId}
-                  onChange={(e) => setFormData({ ...formData, projectId: e.target.value })}
-                  className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue disabled:opacity-60"
-                >
-                  {projectsList.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.title} ({p.company}) {p.hasCaseStudy && modalMode === "create" ? "— Already has case study" : ""}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Linked Project Preview: Cover Image, Title, Description, Overview, Tags */}
-              {selectedProject && (
-                <div className="p-4 rounded-xl border border-border dark:border-dark-border bg-black/[0.02] dark:bg-white/[0.02] space-y-3">
-                  <div className="flex items-start gap-4">
-                    {selectedProject.coverImage && (
-                      <div className="relative w-28 h-20 rounded-lg overflow-hidden shrink-0 border border-border dark:border-dark-border bg-black/5">
-                        <Image
-                          src={selectedProject.coverImage}
-                          alt={selectedProject.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-accent-blue/10 text-accent-blue">
-                          {selectedProject.company}
-                        </span>
-                        <h4 className="font-clash font-bold text-sm text-text-primary dark:text-white truncate">
-                          {selectedProject.title}
-                        </h4>
-                      </div>
-                      <p className="text-xs font-satoshi text-text-muted dark:text-white/60 line-clamp-2">
-                        {selectedProject.description || "No description set on project."}
-                      </p>
-                    </div>
+              {/* Creation Source Switcher (New from Scratch vs Link to Existing Project) */}
+              {modalMode === "create" && (
+                <div className="p-3 bg-black/[0.02] dark:bg-white/[0.02] border border-border dark:border-dark-border rounded-lg flex items-center justify-between gap-3">
+                  <div>
+                    <label className="block text-xs font-satoshi font-semibold text-text-primary dark:text-white">
+                      Case Study Source
+                    </label>
+                    <p className="text-[11px] text-text-muted dark:text-white/50 font-satoshi mt-0.5">
+                      Create independently from scratch, or optionally connect an existing Design Project.
+                    </p>
                   </div>
-
-                  {selectedProject.overview && (
-                    <div className="pt-2 border-t border-border/50 dark:border-dark-border/50">
-                      <span className="text-[10px] font-satoshi uppercase font-bold text-text-muted dark:text-white/40 block mb-0.5">
-                        Project Overview:
-                      </span>
-                      <p className="text-xs font-satoshi text-text-secondary dark:text-white/70 line-clamp-2">
-                        {selectedProject.overview}
-                      </p>
-                    </div>
-                  )}
-
-                  {selectedProject.tags && (
-                    <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                      <span className="text-[10px] font-satoshi text-text-muted dark:text-white/40">Tags:</span>
-                      {(() => {
-                        try {
-                          const t = typeof selectedProject.tags === "string" && selectedProject.tags.startsWith("[")
-                            ? JSON.parse(selectedProject.tags)
-                            : selectedProject.tags.split(",");
-                          return t.slice(0, 4).map((tag: string, idx: number) => (
-                            <span key={idx} className="px-2 py-0.5 rounded-full text-[10px] font-satoshi bg-accent-blue/10 text-accent-blue font-medium">
-                              {tag.trim()}
-                            </span>
-                          ));
-                        } catch {
-                          return null;
+                  <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 p-1 rounded-md">
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, projectId: "" }))}
+                      className={`px-3 py-1 text-xs font-satoshi rounded font-medium transition-colors ${
+                        !formData.projectId
+                          ? "bg-accent-blue text-white shadow-sm"
+                          : "text-text-muted dark:text-white/60 hover:text-text-primary dark:hover:text-white"
+                      }`}
+                    >
+                      Create from New
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const first = projectsList.find((p) => !p.hasCaseStudy) || projectsList[0];
+                        if (first) {
+                          setFormData((prev) => ({
+                            ...prev,
+                            projectId: first.id,
+                            title: first.title,
+                            company: first.company,
+                            coverImage: first.coverImage || prev.coverImage,
+                            overviewNote: first.overview || first.description || prev.overviewNote,
+                          }));
                         }
-                      })()}
-                    </div>
-                  )}
+                      }}
+                      className={`px-3 py-1 text-xs font-satoshi rounded font-medium transition-colors ${
+                        formData.projectId
+                          ? "bg-accent-blue text-white shadow-sm"
+                          : "text-text-muted dark:text-white/60 hover:text-text-primary dark:hover:text-white"
+                      }`}
+                    >
+                      Link to Existing Project
+                    </button>
+                  </div>
                 </div>
               )}
+
+              {/* Optional Existing Project Selector if user chose to link */}
+              {formData.projectId && modalMode === "create" && (
+                <div>
+                  <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1.5">
+                    Select Existing Project to Attach
+                  </label>
+                  <select
+                    value={formData.projectId}
+                    onChange={(e) => {
+                      const proj = projectsList.find((p) => p.id === e.target.value);
+                      setFormData({
+                        ...formData,
+                        projectId: e.target.value,
+                        title: proj?.title || formData.title,
+                        company: proj?.company || formData.company,
+                        coverImage: proj?.coverImage || formData.coverImage,
+                        overviewNote: proj?.overview || proj?.description || formData.overviewNote,
+                      });
+                    }}
+                    className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                  >
+                    {projectsList.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.title} ({p.company}) {p.hasCaseStudy ? "— Already has case study" : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Core Case Study Fields: Title, Company, Role, Year */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                    Case Study Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="e.g. NextGen Mobile Banking Experience"
+                    className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                    Company / Client Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.company}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    placeholder="e.g. Stripe, Airbnb, or Personal Project"
+                    className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                    My Role
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.role}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    placeholder="e.g. Lead Product Designer, UX Researcher"
+                    className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                    Year / Timeline
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.year}
+                    onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                    placeholder="e.g. 2024"
+                    className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                  />
+                </div>
+              </div>
+
+              {/* Cover Image Upload & Preview */}
+              <div>
+                <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1.5">
+                  Cover Image (File Upload)
+                </label>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <label className="cursor-pointer inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-text-primary dark:text-white text-xs font-satoshi font-semibold transition-colors shrink-0 border border-border dark:border-dark-border">
+                    <Upload size={14} />
+                    <span>Upload Cover Image</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCoverUpload}
+                      className="hidden"
+                      disabled={uploadingCover}
+                    />
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.coverImage}
+                    onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                    placeholder="Or paste image URL (or upload will populate automatically)"
+                    className="flex-1 px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                  />
+                </div>
+
+                {uploadingCover && (
+                  <div className="mt-2 text-xs text-accent-blue font-satoshi flex items-center gap-2">
+                    <span className="w-3.5 h-3.5 border-2 border-accent-blue border-t-transparent rounded-full animate-spin" />
+                    <span>Uploading and converting cover image to WebP...</span>
+                  </div>
+                )}
+
+                {formData.coverImage && (
+                  <div className="mt-3 relative w-36 h-24 rounded-lg overflow-hidden border border-border dark:border-dark-border bg-black/5">
+                    <Image src={formData.coverImage} alt="Cover Preview" fill className="object-cover" />
+                  </div>
+                )}
+              </div>
+
+              {/* Tags & Categories */}
+              <div>
+                <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                  Tags (Comma separated)
+                </label>
+                <input
+                  type="text"
+                  value={formData.tags}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                  placeholder="Mobile Apps, Fintech, Design System, UX Research"
+                  className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                />
+              </div>
+
+              {/* Overview / Problem Statement */}
+              <div>
+                <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                  Overview & Problem Statement
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.overviewNote}
+                  onChange={(e) => setFormData({ ...formData, overviewNote: e.target.value })}
+                  placeholder="Outline the core challenge, context, and user problem solved in this case study..."
+                  className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue resize-y"
+                />
+              </div>
 
               {/* UPLOAD MULTIPLE PHOTOS IN SEQUENCE */}
               <div className="p-4 rounded-xl border border-border dark:border-dark-border bg-white dark:bg-dark-card space-y-4">
