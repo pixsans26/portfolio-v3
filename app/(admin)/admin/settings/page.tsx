@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sliders, Save, Upload, Link as LinkIcon, CheckCircle2, Lock, FileArchive, Camera, Image as ImageIcon, User, Mail, Phone } from "lucide-react";
+import { Sliders, Save, Upload, Link as LinkIcon, CheckCircle2, Lock, Camera, Image as ImageIcon, User, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -476,22 +476,6 @@ export default function AdminSettingsPage() {
             </div>
           </form>
 
-          {/* Image Sequence ZIP Uploader Card */}
-          <div className="p-5 rounded-lg border border-border dark:border-dark-border bg-white dark:bg-dark-card shadow-sm space-y-3">
-            <div className="flex items-center gap-2 pb-2 border-b border-border dark:border-dark-border">
-              <FileArchive size={16} className="text-accent-blue" />
-              <div>
-                <h2 className="font-clash font-bold text-sm text-text-primary dark:text-white">
-                  3D Image Sequence Frames ZIP Uploader
-                </h2>
-                <p className="text-[11px] text-text-muted dark:text-white/50 font-satoshi">
-                  Upload a .zip file containing image frames (e.g. frame_001.png to frame_060.png) for live scroll rendering.
-                </p>
-              </div>
-            </div>
-            <SequenceZipUploader />
-          </div>
-
           {/* Change Password Card */}
           <div id="password" className="p-5 rounded-lg border border-border dark:border-dark-border bg-white dark:bg-dark-card shadow-sm space-y-3">
             <div className="flex items-center gap-2 pb-2 border-b border-border dark:border-dark-border">
@@ -620,67 +604,4 @@ function ChangePasswordForm() {
   );
 }
 
-function SequenceZipUploader() {
-  const [zipUploading, setZipUploading] = useState(false);
-  const [status, setStatus] = useState({ type: "", text: "" });
 
-  const handleZipUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.name.endsWith(".zip")) {
-      setStatus({ type: "error", text: "Please select a valid .zip file containing image frames." });
-      return;
-    }
-
-    setZipUploading(true);
-    setStatus({ type: "info", text: "Extracting ZIP file frames into public/sequence..." });
-
-    const body = new FormData();
-    body.append("file", file);
-
-    try {
-      const res = await fetch("/api/admin/upload-sequence", {
-        method: "POST",
-        body,
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setStatus({ type: "success", text: data.message });
-      } else {
-        setStatus({ type: "error", text: data.error });
-      }
-    } catch {
-      setStatus({ type: "error", text: "Failed to upload ZIP sequence." });
-    } finally {
-      setZipUploading(false);
-    }
-  };
-
-  return (
-    <div className="space-y-3">
-      {status.text && (
-        <div
-          className={`p-2.5 rounded-md text-xs font-satoshi ${
-            status.type === "success"
-              ? "bg-accent-green/10 text-accent-green border border-accent-green/20"
-              : status.type === "info"
-              ? "bg-accent-blue/10 text-accent-blue border border-accent-blue/20"
-              : "bg-red-500/10 text-red-500 border border-red-500/20"
-          }`}
-        >
-          {status.text}
-        </div>
-      )}
-
-      <div className="flex items-center gap-3">
-        <label className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-accent-blue text-white text-xs font-satoshi font-semibold hover:opacity-90 transition-opacity">
-          <Upload size={14} /> Upload Image Sequence (.ZIP)
-          <input type="file" onChange={handleZipUpload} className="hidden" accept=".zip" />
-        </label>
-        {zipUploading && <span className="text-xs font-satoshi text-accent-blue">Extracting frames...</span>}
-      </div>
-    </div>
-  );
-}

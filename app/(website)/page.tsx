@@ -1,5 +1,4 @@
 import Hero from "@/sections/home/Hero";
-import ScrollStory from "@/sections/home/ScrollStory";
 import FeaturedWork from "@/sections/home/FeaturedWork";
 import CaseStudyPreview from "@/sections/home/CaseStudyPreview";
 import Skills from "@/sections/home/Skills";
@@ -11,7 +10,6 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <ScrollStory />
       <FeaturedWork />
       <CaseStudyPreview />
       <Skills />
