@@ -73,7 +73,7 @@ export default function PageLoader() {
                   Portfolio
                 </p>
                 <h1 className="text-white font-clash text-5xl md:text-7xl font-bold leading-none">
-                  YN
+                  NT
                 </h1>
               </div>
 
