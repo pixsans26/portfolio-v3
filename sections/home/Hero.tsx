@@ -62,6 +62,57 @@ const lucideIconMap: Record<string, any> = {
   Lightbulb,
 };
 
+const floatingSkillPositions = [
+  {
+    // Top-Right
+    pos: "-top-2 sm:top-2 -right-3 sm:-right-8 z-20",
+    icon: Sparkles,
+    iconColor: "text-accent-blue",
+    dotColor: "bg-accent-blue",
+    deltaX: -34,
+    deltaY: -30,
+    rotateDelta: -4,
+    duration: 4.6,
+    delay: 0.1,
+  },
+  {
+    // Top-Left
+    pos: "top-12 sm:top-14 -left-3 sm:-left-8 z-20",
+    icon: Layers,
+    iconColor: "text-purple-400",
+    dotColor: "bg-purple-500",
+    deltaX: 30,
+    deltaY: -24,
+    rotateDelta: 3,
+    duration: 5.2,
+    delay: 0.2,
+  },
+  {
+    // Bottom-Right
+    pos: "bottom-8 sm:bottom-10 -right-2 sm:-right-6 z-20",
+    icon: Zap,
+    iconColor: "text-emerald-400",
+    dotColor: "bg-emerald-500",
+    deltaX: -26,
+    deltaY: 32,
+    rotateDelta: 4,
+    duration: 4.9,
+    delay: 0.3,
+  },
+  {
+    // Bottom-Left
+    pos: "-bottom-3 sm:-bottom-4 -left-2 sm:-left-6 z-30",
+    icon: Lightbulb,
+    iconColor: "text-amber-400",
+    dotColor: "bg-amber-500",
+    deltaX: 36,
+    deltaY: 28,
+    rotateDelta: -3,
+    duration: 5.8,
+    delay: 0.4,
+  },
+];
+
 export default function Hero() {
   const [roleIdx, setRoleIdx] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -500,78 +551,45 @@ export default function Hero() {
               ) : null}
 
               {/* ─────────────────────────────────────────────────────────────
-                  FRAME 2: Top-Right Floating UI Frame / Device Mockup Placeholder
-                  (Transparent PNG frame layer ready to be swapped with transparent PNG)
+                  INDIVIDUAL FLOATING SKILL CHIPS
+                  (AI UX Research, Wireframing, Prototypes, Problem Solving)
+                  Each skill floats individually around the profile image with 
+                  independent 3D parallax & gentle floating oscillation.
                  ───────────────────────────────────────────────────────────── */}
-              <motion.div
-                animate={{
-                  x: mousePos.x * -42,
-                  y: mousePos.y * -38,
-                  rotate: -mousePos.x * 6,
-                }}
-                transition={{ type: "spring", stiffness: 160, damping: 20 }}
-                className="absolute -top-3 sm:-top-5 -right-3 sm:-right-8 z-20 p-3 sm:p-4 rounded-2xl bg-white/80 dark:bg-dark-card/85 border border-white/60 dark:border-white/15 backdrop-blur-xl shadow-xl shadow-black/5 dark:shadow-2xl max-w-[190px] sm:max-w-[210px] select-none pointer-events-none"
-              >
-                <div className="flex items-center gap-1.5 mb-2 pb-1.5 border-b border-black/5 dark:border-white/10">
-                  <div className="w-2.5 h-2.5 rounded-full bg-accent-blue" />
-                  <div className="w-14 h-2 rounded bg-black/10 dark:bg-white/20" />
-                </div>
-                <div className="space-y-1.5">
-                  <div className="w-full h-11 rounded-lg bg-gradient-to-br from-accent-blue/15 to-purple-500/15 border border-accent-blue/20 flex items-center justify-center">
-                    <Layers size={18} className="text-accent-blue" />
-                  </div>
-                  <div className="flex justify-between items-center text-[10px] font-satoshi font-semibold text-text-muted dark:text-white/60">
-                    <span>Design System</span>
-                    <span className="text-accent-blue">v2.4</span>
-                  </div>
-                </div>
-              </motion.div>
+              {heroSkillsList.map((skill, index) => {
+                const config = floatingSkillPositions[index % floatingSkillPositions.length];
 
-              {/* ─────────────────────────────────────────────────────────────
-                  FRAME 3: Bottom Floating Badge / Core Skills Chips
-                  (Replaces old Title & Company with Core Skills Chips)
-                 ───────────────────────────────────────────────────────────── */}
-              <motion.div
-                animate={{
-                  x: mousePos.x * 38,
-                  y: mousePos.y * 32,
-                }}
-                transition={{ type: "spring", stiffness: 130, damping: 20 }}
-                className="absolute -bottom-4 sm:-bottom-6 left-0 sm:-left-6 z-30 p-3 sm:p-3.5 rounded-2xl bg-white/90 dark:bg-dark-card/90 border border-white/60 dark:border-white/15 backdrop-blur-xl shadow-2xl select-none pointer-events-none max-w-[280px] sm:max-w-[320px]"
-              >
-                <div className="flex items-center gap-1.5 mb-2 pb-1.5 border-b border-black/5 dark:border-white/10">
-                  <Sparkles size={12} className="text-accent-blue" />
-                  <span className="text-[10px] font-satoshi font-bold uppercase tracking-wider text-text-muted dark:text-white/60">
-                    Core Skills & Craft
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {heroSkillsList.map((skill, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-satoshi font-semibold bg-black/[0.04] dark:bg-white/[0.08] text-text-primary dark:text-white border border-black/5 dark:border-white/10 shadow-sm"
+                return (
+                  <motion.div
+                    key={skill + index}
+                    animate={{
+                      x: mousePos.x * config.deltaX,
+                      y: mousePos.y * config.deltaY,
+                      rotate: mousePos.x * config.rotateDelta,
+                    }}
+                    transition={{ type: "spring", stiffness: 140, damping: 20 }}
+                    className={`absolute ${config.pos} select-none pointer-events-none`}
+                  >
+                    <motion.div
+                      animate={{
+                        y: [0, -7, 0],
+                      }}
+                      transition={{
+                        duration: config.duration,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: index * 0.35,
+                      }}
+                      className="px-3.5 py-2 rounded-2xl bg-white/85 dark:bg-dark-card/90 border border-white/60 dark:border-white/15 backdrop-blur-xl shadow-xl shadow-black/5 dark:shadow-2xl flex items-center gap-2"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-accent-blue" />
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* ─────────────────────────────────────────────────────────────
-                  FRAME 4: Top-Left Floating Accent Token / Chip Placeholder
-                 ───────────────────────────────────────────────────────────── */}
-              <motion.div
-                animate={{
-                  x: mousePos.x * -26,
-                  y: mousePos.y * 24,
-                }}
-                transition={{ type: "spring", stiffness: 170, damping: 20 }}
-                className="absolute top-10 -left-2 sm:-left-6 z-20 px-3 py-1.5 rounded-full bg-white/85 dark:bg-dark-card/90 border border-white/60 dark:border-white/15 backdrop-blur-xl shadow-lg flex items-center gap-2 text-xs font-satoshi font-semibold text-text-primary dark:text-white select-none pointer-events-none"
-              >
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>100M+ Users</span>
-              </motion.div>
+                      <span className={`w-2 h-2 rounded-full ${config.dotColor} animate-pulse`} />
+                      <span className="text-xs font-satoshi font-bold text-text-primary dark:text-white whitespace-nowrap">
+                        {skill}
+                      </span>
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </motion.div>
