@@ -25,6 +25,7 @@ export default function AdminSettingsPage() {
     googleDriveFolderUrl: "https://drive.google.com/drive/folders/sample",
     experienceHeadline: "Where I've worked.",
     experienceSubtitle: "6 years across product design, design systems, and UX research — from seed-stage startups to 100M-user platforms.",
+    heroSkills: "AI UX Research, Wireframing, Prototypes, Problem Solving",
   });
 
   useEffect(() => {
@@ -184,6 +185,22 @@ export default function AdminSettingsPage() {
                 />
                 <p className="text-[10px] font-satoshi text-text-muted dark:text-white/40 mt-1">
                   These rotate continuously in the hero animated headline.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-satoshi uppercase font-semibold text-text-muted dark:text-white/50 mb-1">
+                  Hero Profile Skills Chips (Comma Separated)
+                </label>
+                <input
+                  type="text"
+                  value={settings.heroSkills}
+                  onChange={(e) => setSettings({ ...settings, heroSkills: e.target.value })}
+                  placeholder="AI UX Research, Wireframing, Prototypes, Problem Solving"
+                  className="w-full px-3 py-2 text-xs font-satoshi bg-black/5 dark:bg-white/5 border border-border dark:border-dark-border rounded-md text-text-primary dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-blue"
+                />
+                <p className="text-[10px] font-satoshi text-text-muted dark:text-white/40 mt-1">
+                  Replaces the old Title & Company chip on the hero portrait with your core skill badges.
                 </p>
               </div>
 

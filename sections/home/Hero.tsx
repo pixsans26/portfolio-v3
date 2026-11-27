@@ -31,6 +31,7 @@ import {
   GitBranch,
   Wrench,
   Lightbulb,
+  Sparkles,
 } from "lucide-react";
 
 const roles = ["Product Designer", "UX Designer", "UI Designer", "Problem Solver", "System Thinker"];
@@ -75,10 +76,15 @@ export default function Hero() {
     email: "nitishtao@gmail.com",
     phone: "+91 98765 43210",
     latestProject: "CRED Pay 2.0",
+    heroSkills: "AI UX Research, Wireframing, Prototypes, Problem Solving",
   });
   const [heroTools, setHeroTools] = useState<any[]>([]);
   const [latestProjectName, setLatestProjectName] = useState("");
   const heroRef = useRef<HTMLDivElement>(null);
+
+  const heroSkillsList = siteSettings.heroSkills
+    ? siteSettings.heroSkills.split(",").map((s) => s.trim()).filter(Boolean)
+    : ["AI UX Research", "Wireframing", "Prototypes", "Problem Solving"];
 
   // Fetch live site settings from SQLite database
   useEffect(() => {
@@ -522,8 +528,8 @@ export default function Hero() {
               </motion.div>
 
               {/* ─────────────────────────────────────────────────────────────
-                  FRAME 3: Bottom Floating Badge / Experience Frame Placeholder
-                  (Transparent PNG layer ready to be swapped with transparent PNG)
+                  FRAME 3: Bottom Floating Badge / Core Skills Chips
+                  (Replaces old Title & Company with Core Skills Chips)
                  ───────────────────────────────────────────────────────────── */}
               <motion.div
                 animate={{
@@ -531,18 +537,24 @@ export default function Hero() {
                   y: mousePos.y * 32,
                 }}
                 transition={{ type: "spring", stiffness: 130, damping: 20 }}
-                className="absolute -bottom-3 sm:-bottom-5 left-0 sm:-left-6 z-30 p-3 sm:p-4 rounded-2xl bg-white/85 dark:bg-dark-card/90 border border-white/60 dark:border-white/15 backdrop-blur-xl shadow-2xl flex items-center gap-3 select-none pointer-events-none"
+                className="absolute -bottom-4 sm:-bottom-6 left-0 sm:-left-6 z-30 p-3 sm:p-3.5 rounded-2xl bg-white/90 dark:bg-dark-card/90 border border-white/60 dark:border-white/15 backdrop-blur-xl shadow-2xl select-none pointer-events-none max-w-[280px] sm:max-w-[320px]"
               >
-                <div className="w-10 h-10 rounded-xl bg-accent-blue/20 flex items-center justify-center text-accent-blue flex-shrink-0">
-                  <Palette size={18} />
+                <div className="flex items-center gap-1.5 mb-2 pb-1.5 border-b border-black/5 dark:border-white/10">
+                  <Sparkles size={12} className="text-accent-blue" />
+                  <span className="text-[10px] font-satoshi font-bold uppercase tracking-wider text-text-muted dark:text-white/60">
+                    Core Skills & Craft
+                  </span>
                 </div>
-                <div className="text-left">
-                  <p className="text-text-primary dark:text-white font-satoshi font-bold text-sm leading-tight">
-                    {siteSettings.heroTitle || "Senior Product Designer"}
-                  </p>
-                  <p className="text-text-muted dark:text-white/70 text-xs font-satoshi mt-0.5">
-                    Atlassian · CRED · Swiggy
-                  </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {heroSkillsList.map((skill, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-satoshi font-semibold bg-black/[0.04] dark:bg-white/[0.08] text-text-primary dark:text-white border border-black/5 dark:border-white/10 shadow-sm"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent-blue" />
+                      {skill}
+                    </span>
+                  ))}
                 </div>
               </motion.div>
 
